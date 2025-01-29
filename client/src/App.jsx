@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Search from './components/search.jsx';
 import FetchTopItems from './components/fetchTopItems.jsx';
 import Landing from './components/landingPage.jsx';
+import Profile from './components/profile.jsx';
 
 const App = () => {
   const [userProfile, setUserProfile] = useState(null);
@@ -107,7 +108,7 @@ const App = () => {
       {!accessToken ? (
         <Landing btnOnClick={handleLogin} />
       ) : (
-        <div>
+        <div style={{ width: '100%' }}>
           <button
             style={{
               padding: '10px 20px',
@@ -123,29 +124,17 @@ const App = () => {
           >
             Log out
           </button>
-
-          <Search access_token={accessToken} />
-
-          {userProfile && (
-            <div>
-              <h2>Welcome, {userProfile.display_name}!</h2>
-              <input
-                type="text"
-                placeholder="Enter Playlist ID"
-                value={inputPlaylistId}
-                onChange={(e) => setInputPlaylistId(e.target.value)}
-              />
-              <img src={userProfile.images[0].url} />
-              <button
-                onClick={() => {
-                  console.log('id' + inputPlaylistId);
-                  fetchPlaylistData(inputPlaylistId);
-                }}
-              >
-                Fetch Playlist
-              </button>
-            </div>
-          )}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <Profile details={userProfile} />
+          </div>
+          <div>
+            <Search access_token={accessToken} />{' '}
+          </div>
 
           {playlists && (
             <div>

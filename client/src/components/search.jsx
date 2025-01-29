@@ -81,22 +81,47 @@ const Search = (access_token) => {
     }
 
     if (searchResults.length === 0) {
-      return <p>No results found.</p>;
+      return <p> </p>;
     }
 
     return (
       <ul>
         {searchResults.map((song) => (
-          <li key={song.id}>
-            <div>
-              {song.name} -{' '}
-              {song.artists.map((artist) => artist.name).join(', ')}
+          <div>
+            <div className="resultDiv">
+              <li key={song.id} className="resultLi">
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <img src={song.album.images[1].url} className="trackImg" />
+
+                  <h3 className="resultTitle">
+                    {song.name} -{' '}
+                    {song.artists.map((artist) => artist.name).join(', ')}
+                  </h3>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <button
+                    onClick={() =>
+                      window.open(`https://open.spotify.com/track/${song.id}`)
+                    }
+                    className="resultBtns"
+                  >
+                    Play Track
+                  </button>
+                  <button
+                    onClick={() => handleSelectSong(song)}
+                    className="resultBtns"
+                  >
+                    View Details
+                  </button>
+                </div>
+              </li>
             </div>
-            <button onClick={() => fetchTrackFeatures(song.id)}>
-              View Features
-            </button>
-            <button onClick={() => handleSelectSong(song)}>View Details</button>
-          </li>
+          </div>
         ))}
       </ul>
     );
@@ -106,7 +131,7 @@ const Search = (access_token) => {
     if (!selectedSong) return null;
 
     return (
-      <div>
+      <div className="resultDiv">
         <h2>{selectedSong.name}</h2>
         <p>
           Artists:{' '}
@@ -120,31 +145,33 @@ const Search = (access_token) => {
   };
 
   return (
-    <div>
-      <h1>Song Search</h1>
-
+    <div className="searchContainer">
+      <h2 className="searchHeader">Search for Songs</h2>
       <input
         type="text"
         value={query}
         onChange={handleSearchChange}
-        placeholder="Search for songs"
+        placeholder="Enter a song name..."
+        className="searchInput"
       />
 
-      <div>
-        <h3>Search Results:</h3>
+      <div className="resultContainer">
+        <h3 className="resultHeader">Results:</h3>
         {renderResults()}
 
         {totalResults > 10 && (
-          <div>
+          <div className="paginationDiv">
             <button
               disabled={page === 1}
               onClick={() => handlePagination('prev')}
+              className="paginationBtn"
             >
               Previous
             </button>
             <button
               disabled={page * 10 >= totalResults}
               onClick={() => handlePagination('next')}
+              className="paginationBtn"
             >
               Next
             </button>
