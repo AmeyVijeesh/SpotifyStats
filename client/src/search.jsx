@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// SongSearch Component - Handles searching and displaying results
 const SongSearchApp = (access_token) => {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -9,9 +8,8 @@ const SongSearchApp = (access_token) => {
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
 
-  const accessToken = access_token; // Replace with your valid access token
+  const accessToken = access_token;
 
-  // Fetch songs based on the search query and pagination
   const fetchSongs = async (query, page = 1) => {
     if (!query) return;
 
@@ -121,6 +119,7 @@ const SongSearchApp = (access_token) => {
           {selectedSong.artists.map((artist) => artist.name).join(', ')}
         </p>
         <p>Album: {selectedSong.album.name}</p>
+        <p>Link: {`https://open.spotify.com/track/${selectedSong.id}`}</p>
         <img src={selectedSong.album.images[0].url} alt={selectedSong.name} />
       </div>
     );

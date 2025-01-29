@@ -58,7 +58,6 @@ app.get('/callback', async (req, res) => {
     accessToken = tokenResponse.data.access_token;
     refreshToken = tokenResponse.data.refresh_token;
 
-    // Instead of redirecting to the frontend with query params, save tokens server-side and respond with a success message.
     return res.redirect('/user-profile');
   } catch (error) {
     console.error(
@@ -114,7 +113,7 @@ app.get('/user-profile', async (req, res) => {
 });
 
 app.get('/top-items', async (req, res) => {
-  const { type } = req.query; // `type` can be 'tracks' or 'artists'
+  const { type } = req.query;
 
   if (!type || (type !== 'tracks' && type !== 'artists')) {
     return res
@@ -136,7 +135,6 @@ app.get('/top-items', async (req, res) => {
       }
     );
 
-    // Send the fetched data back to the client
     res.status(200).json(topItemsResponse.data);
   } catch (error) {
     res.status(500).send(error);

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import SongSearchApp from './search';
+import FetchTopItems from './components/fetchTopItems.jsx';
+import Landing from './components/landingPage.jsx';
 
 const App = () => {
   const [userProfile, setUserProfile] = useState(null);
@@ -12,6 +14,7 @@ const App = () => {
 
   const handleLogin = () => {
     const clientId = '27a6dda3e48a4450b55d1eb826168cb3';
+    console.log(clientId);
     const redirectUri = 'http://localhost:5173/';
     const scope = 'user-library-read playlist-read-private';
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=${scope}`;
@@ -22,6 +25,8 @@ const App = () => {
     setUserProfile(null);
     setPlaylists(null);
     setAccessToken(null);
+    setTopArtists(null);
+    setTopTracks(null);
     window.location.hash = '';
     alert('You have been logged out! Please log in again.');
   };
@@ -59,20 +64,18 @@ const App = () => {
   const extractPlaylistId = (url) => {
     try {
       const urlObject = new URL(url);
-      const pathname = urlObject.pathname; // Extract the path from the URL
-      const segments = pathname.split('/'); // Split the path into segments
+      const pathname = urlObject.pathname;
+      const segments = pathname.split('/');
 
-      // Handle the case for "https://open.spotify.com/playlist/{playlistId}"
       if (segments[1] === 'playlist' && segments[2]) {
-        return segments[2]; // The playlist ID is the third segment
+        return segments[2];
       }
 
-      // Handle the case for "https://api.spotify.com/v1/playlists/{playlistId}/tracks"
       if (segments[2] === 'playlists' && segments[3]) {
-        return segments[3]; // The playlist ID is the fourth segment
+        return segments[3];
       }
 
-      return null; // Return null if neither pattern matches
+      return null;
     } catch (error) {
       console.error('Error extracting playlist ID:', error);
       return null;
@@ -99,43 +102,28 @@ const App = () => {
     }
   };
 
-  const fetchTopItems = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/top-items?type=tracks`
-      );
-      const data = await response.json();
-      setTopTracks(data.items);
-
-      const response_a = await fetch(
-        `http://localhost:8000/top-items?type=artists`
-      );
-      const data_a = await response_a.json();
-      setTopArtists(data_a.items);
-    } catch (error) {
-      throw new Error(error);
-    }
-  };
-
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Spotify App</h1>
-
+    <div>
       {!accessToken ? (
-        <button
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            backgroundColor: '#1DB954',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
-          onClick={handleLogin}
+        <div
+          style={{ backgroundColor: 'green', width: '200vh', height: '100vh' }}
         >
-          Log in with Spotify
-        </button>
+          <Landing />
+          <button
+            style={{
+              padding: '10px 20px',
+              fontSize: '16px',
+              backgroundColor: '#1DB954',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+            onClick={handleLogin}
+          >
+            Log in with Spotify
+          </button>
+        </div>
       ) : (
         <div>
           <button
@@ -198,42 +186,20 @@ const App = () => {
               </ul>
             </div>
           )}
-
+          <input
+            type="text"
+            placeholder="Enter Playlist ID"
+            value={inputPlaylistId}
+            onChange={(e) => setInputPlaylistId(e.target.value)}
+          />
           <button
             onClick={() => {
-              fetchTopItems();
+              console.log('id' + inputPlaylistId);
+              fetchPlaylistData(inputPlaylistId);
             }}
           >
-            Fetch Top Tracks
+            Fetch Playlist
           </button>
-
-          {topTracks && (
-            <div>
-              <h3>Top Tracks: </h3>
-              <ul>
-                {topTracks.map((topTrack) => {
-                  return (
-                    <li key={topTrack.id}>
-                      {topTrack.name} -{' '}
-                      {topTrack.artists.map((artist) => artist.name).join(', ')}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-
-          {topArtists && (
-            <div>
-              <h3>Top Artists: </h3>
-              <ul>
-                {topArtists.map((topArtist) => {
-                  return <li key={topArtist.id}>{topArtist.name} </li>;
-                })}
-              </ul>
-            </div>
-          )}
-
           {playlistData && (
             <div>
               <h3>Playlist Tracks:</h3>
@@ -251,6 +217,7 @@ const App = () => {
           )}
         </div>
       )}
+      <FetchTopItems access_token={accessToken} />
     </div>
   );
 };
