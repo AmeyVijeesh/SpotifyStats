@@ -1,17 +1,21 @@
 import React from 'react';
+import bg_img from './assets/bgimg.jpg';
+import './landingPage.css';
 
-const Landing = () => {
+const Landing = ({ btnOnClick }) => {
   return (
     <>
-      <div
-        style={{
-          height: '100vh',
-          width: '100vh',
-          backgroundColor: 'yellow',
-          border: '1px solid orange',
-        }}
-      >
-        <img src="https://www.shutterstock.com/image-photo/studio-photo-short-haired-brunette-260nw-2071741802.jpg" />
+      <div className="container_div">
+        <img src={bg_img} className="side_img" />
+        <div className="right_div">
+          <h1 className="landingHeading">Refine your listening experience.</h1>
+          <h2 className="landingHeading2">
+            Login with Spotify to get started.
+          </h2>
+          <button onClick={btnOnClick} className="loginBtn">
+            Log in with Spotify
+          </button>
+        </div>
       </div>
     </>
   );

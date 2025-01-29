@@ -1,0 +1,68 @@
+.container_div {
+  background-color: #efd01b;
+  position: fixed;
+  display: flex;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.side_img {
+  height: 100vh;
+  width: auto;
+}
+
+.right_div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.landingHeading {
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  font-size: 2.5rem;
+  text-align: center;
+  margin: 0;
+}
+
+.landingHeading2 {
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.loginBtn {
+  padding: 10px;
+  border: 0;
+  background-color: rgb(225, 133, 139);
+  color: white;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.loginBtn:hover {
+  background-color: rgb(181, 108, 113);
+}
+
+@media (max-width: 768px) {
+  .side_img {
+    height: auto;
+    width: 100%;
+  }
+
+  .container_div {
+    flex-direction: column;
+  }
+
+  .right_div {
+    height: 100%;
+  }
+}

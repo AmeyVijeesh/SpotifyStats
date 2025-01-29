@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import SongSearchApp from './search';
+import Search from './components/search.jsx';
 import FetchTopItems from './components/fetchTopItems.jsx';
 import Landing from './components/landingPage.jsx';
 
@@ -14,7 +14,7 @@ const App = () => {
 
   const handleLogin = () => {
     const clientId = '27a6dda3e48a4450b55d1eb826168cb3';
-    console.log(clientId);
+    console.log('id' + clientId);
     const redirectUri = 'http://localhost:5173/';
     const scope = 'user-library-read playlist-read-private';
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=${scope}`;
@@ -105,25 +105,7 @@ const App = () => {
   return (
     <div>
       {!accessToken ? (
-        <div
-          style={{ backgroundColor: 'green', width: '200vh', height: '100vh' }}
-        >
-          <Landing />
-          <button
-            style={{
-              padding: '10px 20px',
-              fontSize: '16px',
-              backgroundColor: '#1DB954',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-            }}
-            onClick={handleLogin}
-          >
-            Log in with Spotify
-          </button>
-        </div>
+        <Landing btnOnClick={handleLogin} />
       ) : (
         <div>
           <button
@@ -142,7 +124,7 @@ const App = () => {
             Log out
           </button>
 
-          <SongSearchApp access_token={accessToken} />
+          <Search access_token={accessToken} />
 
           {userProfile && (
             <div>

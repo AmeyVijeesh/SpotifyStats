@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import './search.css';
 
-const SongSearchApp = (access_token) => {
+const Search = (access_token) => {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
@@ -40,25 +41,21 @@ const SongSearchApp = (access_token) => {
     }
   };
 
-  // Handle changes in the search input
   const handleSearchChange = (e) => {
     setQuery(e.target.value);
-    fetchSongs(e.target.value, 1); // Fetch first page of results
+    fetchSongs(e.target.value, 1);
   };
 
-  // Handle song selection
   const handleSelectSong = (song) => {
     setSelectedSong(song);
   };
 
-  // Handle pagination (next/previous page)
   const handlePagination = (direction) => {
     const newPage = direction === 'next' ? page + 1 : page - 1;
     setPage(newPage);
     fetchSongs(query, newPage);
   };
 
-  // Display the song's detailed view (audio features, etc.)
   const fetchTrackFeatures = async (songId) => {
     try {
       const response = await fetch(
@@ -78,8 +75,6 @@ const SongSearchApp = (access_token) => {
       console.error('Error fetching song features:', error);
     }
   };
-
-  // Search results UI (song list)
   const renderResults = () => {
     if (loading) {
       return <p>Loading...</p>;
@@ -107,7 +102,6 @@ const SongSearchApp = (access_token) => {
     );
   };
 
-  // Detailed view for the selected song
   const renderSelectedSong = () => {
     if (!selectedSong) return null;
 
@@ -163,4 +157,4 @@ const SongSearchApp = (access_token) => {
   );
 };
 
-export default SongSearchApp;
+export default Search;
