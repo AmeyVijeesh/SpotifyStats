@@ -56,25 +56,6 @@ const Search = (access_token) => {
     fetchSongs(query, newPage);
   };
 
-  const fetchTrackFeatures = async (songId) => {
-    try {
-      const response = await fetch(
-        `https://api.spotify.com/v1/audio-features/${songId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken.access_token}`,
-          },
-        }
-      );
-      const data = await response.json();
-      console.log(accessToken.access_token);
-      alert(
-        `Song Features: Danceability: ${data.danceability}, Energy: ${data.energy}, Valence: ${data.valence}`
-      );
-    } catch (error) {
-      console.error('Error fetching song features:', error);
-    }
-  };
   const renderResults = () => {
     if (loading) {
       return <p>Loading...</p>;
@@ -156,7 +137,6 @@ const Search = (access_token) => {
       />
 
       <div className="resultContainer">
-        <h3 className="resultHeader">Results:</h3>
         {renderResults()}
 
         {totalResults > 10 && (

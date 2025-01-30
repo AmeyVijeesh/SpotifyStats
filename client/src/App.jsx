@@ -3,6 +3,8 @@ import Search from './components/search.jsx';
 import FetchTopItems from './components/fetchTopItems.jsx';
 import Landing from './components/landingPage.jsx';
 import Profile from './components/profile.jsx';
+import Modal from 'react-modal';
+import Playlists from './components/playlists.jsx';
 
 const App = () => {
   const [userProfile, setUserProfile] = useState(null);
@@ -12,6 +14,7 @@ const App = () => {
   const [inputPlaylistId, setInputPlaylistId] = useState('');
   const [topTracks, setTopTracks] = useState(null);
   const [topArtists, setTopArtists] = useState(null);
+  const [noPlaylists, setNoPlaylists] = useState(0);
 
   const handleLogin = () => {
     const clientId = '27a6dda3e48a4450b55d1eb826168cb3';
@@ -55,8 +58,18 @@ const App = () => {
         `http://localhost:8000/user-profile?access_token=${token}`
       );
       const data = await response.json();
-      setUserProfile(data.profile);
-      setPlaylists(data.playlists.items);
+
+      if (data.profile) setUserProfile(data.profile);
+
+      if (data.playlists?.items) {
+        const playlistCount = data.playlists.items.length;
+        setPlaylists(data.playlists.items);
+        setNoPlaylists(playlistCount);
+        console.log(`Number of playlists: ${playlistCount}`);
+      } else {
+        setNoPlaylists(0); // Fallback if there are no playlists
+        console.log('No playlists found.');
+      }
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
@@ -109,54 +122,24 @@ const App = () => {
         <Landing btnOnClick={handleLogin} />
       ) : (
         <div style={{ width: '100%' }}>
-          <button
-            style={{
-              padding: '10px 20px',
-              fontSize: '16px',
-              backgroundColor: 'red',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              marginBottom: '20px',
-            }}
-            onClick={handleLogout}
-          >
-            Log out
-          </button>
           <div
             style={{
               display: 'flex',
               justifyContent: 'center',
             }}
           >
-            <Profile details={userProfile} />
+            <Profile
+              details={userProfile}
+              playlistCount={noPlaylists}
+              logOut={handleLogout}
+            />
           </div>
           <div>
             <Search access_token={accessToken} />{' '}
           </div>
 
-          {playlists && (
-            <div>
-              <h2>List of Playlists: </h2>
-              <ul>
-                {playlists.map((playlist) => {
-                  return (
-                    <div key={playlist.id}>
-                      <li>{playlist.name}</li>
-                      <button
-                        onClick={() => {
-                          fetchPlaylistData(playlist.tracks.href);
-                        }}
-                      >
-                        View Songs
-                      </button>
-                    </div>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
+          <Playlists playlists={playlists} extractor={extractPlaylistId} />
+
           <input
             type="text"
             placeholder="Enter Playlist ID"
