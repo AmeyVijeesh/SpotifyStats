@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import './playlists.css';
 
 Modal.setAppElement('#root');
 
-const Playlists = ({ playlists, extractor }) => {
-  const [playlistData, setPlaylistData] = useState(null);
+const Playlists = ({ playlists, extractor, at }) => {
+  const [playlistData, setPlaylistData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalTracks, setTotalTracks] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const tracksPerPage = 50; // Pagination for every 100 songs
 
   const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
+  const closeModal = () => {
+    setIsOpen(false);
+    setPlaylistData([]); // Clear data when closing the modal
+    setCurrentPage(1); // Reset pagination
+  };
 
   const fetchPlaylistData = async (playlistId) => {
     const playlistIdExtracted = extractor(playlistId);
@@ -18,18 +25,50 @@ const Playlists = ({ playlists, extractor }) => {
       return;
     }
 
-    try {
-      const response = await fetch(
-        `http://localhost:8000/get-playlist?playlist_id=${playlistIdExtracted}`
-      );
-      const data = await response.json();
+    let allTracks = [];
+    let nextUrl = `https://api.spotify.com/v1/playlists/${playlistIdExtracted}/tracks?offset=0&limit=100`;
 
-      setPlaylistData(data.tracks.items);
-      console.log(playlistData);
+    try {
+      while (nextUrl) {
+        const response = await fetch(nextUrl, {
+          headers: {
+            Authorization: `Bearer ${at}`, // Add the token here
+          },
+        });
+        const data = await response.json();
+
+        allTracks = [...allTracks, ...data.items];
+        nextUrl = data.next; // Get the next page if available
+      }
+
+      setPlaylistData(allTracks);
+      setTotalTracks(allTracks.length);
+      console.log(allTracks.length); // Total number of tracks
     } catch (error) {
       console.error('Error fetching playlist data:', error);
     }
   };
+
+  useEffect(() => {
+    console.log(totalTracks);
+  }, [totalTracks]);
+
+  const indexOfLastTrack = currentPage * tracksPerPage;
+  const indexOfFirstTrack = indexOfLastTrack - tracksPerPage;
+  const currentTracks = playlistData.slice(indexOfFirstTrack, indexOfLastTrack);
+
+  const handleNextPage = () => {
+    if (indexOfLastTrack < playlistData.length) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
+  };
+
   return (
     <>
       <div
@@ -67,19 +106,47 @@ const Playlists = ({ playlists, extractor }) => {
             </div>
           ))}
       </div>
+
       {playlistData && (
-        <Modal isOpen={isOpen} onRequestClose={closeModal}>
-          <div>
-            <h3>Playlist Tracks:</h3>
-            <ul>
-              {playlistData.map((track) => (
+        <Modal
+          isOpen={isOpen}
+          onRequestClose={closeModal}
+          className="playlistModal"
+        >
+          <div className="playlistModalDiv">
+            <h3 className="playlistModalTitle">Playlist Tracks:</h3>
+            <ol className="playlistModalContent">
+              {currentTracks.map((track) => (
                 <li key={track.id}>
                   {track.track.name} -{' '}
                   {track.track.artists.map((artist) => artist.name).join(', ')}
                 </li>
               ))}
-            </ul>
-            <button onClick={closeModal}>Close Modal</button>
+            </ol>
+
+            <div className="paginationControls">
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className="playlistModalButton"
+              >
+                Previous
+              </button>
+              <span className="paginationInfo">
+                Page {currentPage} of {Math.ceil(totalTracks / tracksPerPage)}
+              </span>
+              <button
+                onClick={handleNextPage}
+                disabled={indexOfLastTrack >= playlistData.length}
+                className="playlistModalButton"
+              >
+                Next
+              </button>
+            </div>
+
+            <button className="playlistModalButton" onClick={closeModal}>
+              Close Modal
+            </button>
           </div>
         </Modal>
       )}

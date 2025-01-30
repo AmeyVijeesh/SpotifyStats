@@ -17,7 +17,7 @@ const App = () => {
   const [noPlaylists, setNoPlaylists] = useState(0);
 
   const handleLogin = () => {
-    const clientId = '27a6dda3e48a4450b55d1eb826168cb3';
+    const clientId = 'b1530fe6e603478f82a28a6acd6625d0';
     console.log('id' + clientId);
     const redirectUri = 'http://localhost:5173/';
     const scope = 'user-library-read playlist-read-private';
@@ -138,7 +138,11 @@ const App = () => {
             <Search access_token={accessToken} />{' '}
           </div>
 
-          <Playlists playlists={playlists} extractor={extractPlaylistId} />
+          <Playlists
+            playlists={playlists}
+            extractor={extractPlaylistId}
+            at={accessToken}
+          />
 
           <input
             type="text"

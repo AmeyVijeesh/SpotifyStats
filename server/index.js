@@ -173,11 +173,9 @@ app.get('/get-playlist', async (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  // Clear the server-side tokens
   accessToken = null;
   refreshToken = null;
 
-  // Redirect the user to your own confirmation or login page
   res.redirect('/');
 });
 

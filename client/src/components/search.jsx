@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './search.css';
 
 const Search = (access_token) => {
@@ -17,12 +17,9 @@ const Search = (access_token) => {
     setLoading(true);
     try {
       const encodedQuery = encodeURIComponent(query);
-      console.log(' token - ' + JSON.stringify(accessToken.access_token));
-
+      const offset = (page - 1) * 10;
       const response = await fetch(
-        `https://api.spotify.com/v1/search?q=${encodedQuery}&type=track&limit=10&offset=${
-          (page - 1) * 10
-        }`,
+        `https://api.spotify.com/v1/search?q=${encodedQuery}&type=track&limit=10&offset=${offset}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken.access_token}`,
@@ -31,9 +28,13 @@ const Search = (access_token) => {
       );
 
       const data = await response.json();
-      console.log('data = ' + JSON.stringify(data));
-      setSearchResults(data.tracks.items);
-      setTotalResults(data.tracks.total);
+      if (data.tracks) {
+        setSearchResults(data.tracks.items);
+        setTotalResults(data.tracks.total);
+      } else {
+        setSearchResults([]);
+        setTotalResults(0);
+      }
     } catch (error) {
       console.error('Error fetching songs:', error);
     } finally {
@@ -42,8 +43,10 @@ const Search = (access_token) => {
   };
 
   const handleSearchChange = (e) => {
-    setQuery(e.target.value);
-    fetchSongs(e.target.value, 1);
+    const newQuery = e.target.value;
+    setQuery(newQuery);
+    setPage(1);
+    fetchSongs(newQuery, 1);
   };
 
   const handleSelectSong = (song) => {
@@ -62,23 +65,23 @@ const Search = (access_token) => {
     }
 
     if (searchResults.length === 0) {
-      return <p> </p>;
+      return <p>No results found.</p>;
     }
 
     return (
       <ul>
         {searchResults.map((song) => (
-          <div>
+          <div key={song.id}>
             <div className="resultDiv">
-              <li key={song.id} className="resultLi">
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <img src={song.album.images[1].url} className="trackImg" />
-
+              <li className="resultLi">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {song.album.images[1] && (
+                    <img
+                      src={song.album.images[1].url}
+                      className="trackImg"
+                      alt="Album Art"
+                    />
+                  )}
                   <h3 className="resultTitle">
                     {song.name} -{' '}
                     {song.artists.map((artist) => artist.name).join(', ')}
@@ -148,6 +151,7 @@ const Search = (access_token) => {
             >
               Previous
             </button>
+            <span>Page {page}</span>
             <button
               disabled={page * 10 >= totalResults}
               onClick={() => handlePagination('next')}
