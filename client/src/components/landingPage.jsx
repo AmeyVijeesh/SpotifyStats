@@ -8,7 +8,7 @@ const Landing = ({ btnOnClick }) => {
       <div className="container_div">
         <img src={bg_img} className="side_img" />
         <div className="right_div">
-          <h1 className="landingHeading">Refine your listening experience.</h1>
+          <h1 className="landingHeading">Refine your Listening Experience.</h1>
           <h2 className="landingHeading2">
             Login with Spotify to get started.
           </h2>
