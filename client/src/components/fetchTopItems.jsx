@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
+import './fetchTopItems.css';
 
 const FetchTopItems = ({ access_token }) => {
   const [topTracks, setTopTracks] = useState(null);
@@ -30,32 +31,42 @@ const FetchTopItems = ({ access_token }) => {
 
   return (
     <>
-      {topTracks && (
-        <div>
-          <h3>Top Tracks: </h3>
-          <ul>
-            {topTracks.map((topTrack) => {
-              return (
-                <li key={topTrack.id}>
-                  {topTrack.name} -{' '}
-                  {topTrack.artists.map((artist) => artist.name).join(', ')}
-                </li>
-              );
-            })}
-          </ul>
+      <div className="topItemsCont">
+        <div className="topItemsChildren">
+          {topTracks && (
+            <div>
+              <h3 className="topItemsHeader">Top Tracks: </h3>
+              <ul>
+                {topTracks.map((topTrack) => {
+                  return (
+                    <li className="topItemsP" key={topTrack.id}>
+                      {topTrack.name} -{' '}
+                      {topTrack.artists.map((artist) => artist.name).join(', ')}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
-      )}
 
-      {topArtists && (
-        <div>
-          <h3>Top Artists: </h3>
-          <ul>
-            {topArtists.map((topArtist) => {
-              return <li key={topArtist.id}>{topArtist.name} </li>;
-            })}
-          </ul>
+        <div className="topItemsChildren">
+          {topArtists && (
+            <div>
+              <h3 className="topItemsHeader">Top Artists: </h3>
+              <ul>
+                {topArtists.map((topArtist) => {
+                  return (
+                    <li className="topItemsP" key={topArtist.id}>
+                      {topArtist.name}{' '}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 };

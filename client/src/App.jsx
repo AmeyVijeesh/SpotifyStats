@@ -17,7 +17,7 @@ const App = () => {
   const [noPlaylists, setNoPlaylists] = useState(0);
 
   const handleLogin = () => {
-    const clientId = 'b1530fe6e603478f82a28a6acd6625d0';
+    const clientId = 'c9e9abc6c49c44abb0e02bd049165d92';
     console.log('id' + clientId);
     const redirectUri = 'http://localhost:5173/';
     const scope = 'user-library-read playlist-read-private';
@@ -144,33 +144,38 @@ const App = () => {
             at={accessToken}
           />
 
-          <input
-            type="text"
-            placeholder="Enter Playlist ID"
-            value={inputPlaylistId}
-            onChange={(e) => setInputPlaylistId(e.target.value)}
-          />
-          <button
-            onClick={() => {
-              console.log('id' + inputPlaylistId);
-              fetchPlaylistData(inputPlaylistId);
-            }}
-          >
-            Fetch Playlist
-          </button>
+          <div className="searchContainer">
+            <h2 className="searchHeader">Fetch a Playlist</h2>
+            <input
+              type="text"
+              placeholder="Enter Playlist ID"
+              value={inputPlaylistId}
+              className="searchInput"
+              onChange={(e) => setInputPlaylistId(e.target.value)}
+            />
+            <button
+              onClick={() => {
+                console.log('id' + inputPlaylistId);
+                fetchPlaylistData(inputPlaylistId);
+              }}
+              className="searchBtn"
+            >
+              Fetch Playlist
+            </button>
+          </div>
           {playlistData && (
-            <div>
-              <h3>Playlist Tracks:</h3>
-              <ul>
+            <div className="playlistContainer">
+              <h3 className="searchHeader">Playlist Tracks:</h3>
+              <ol>
                 {playlistData.map((track) => (
-                  <li key={track.id}>
+                  <li key={track.id} className="playlistLi">
                     {track.track.name} -{' '}
                     {track.track.artists
                       .map((artist) => artist.name)
                       .join(', ')}
                   </li>
                 ))}
-              </ul>
+              </ol>
             </div>
           )}
         </div>
