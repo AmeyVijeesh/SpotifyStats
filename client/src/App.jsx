@@ -19,7 +19,7 @@ const App = () => {
   const handleLogin = () => {
     const clientId = 'c9e9abc6c49c44abb0e02bd049165d92';
     console.log('id' + clientId);
-    const redirectUri = 'http://localhost:5173/';
+    const redirectUri = 'https://getspotifyinfo.netlify.app/';
     const scope = 'user-library-read playlist-read-private';
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=${scope}`;
     window.location.href = authUrl;
@@ -55,7 +55,7 @@ const App = () => {
   const fetchUserProfile = async (token) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/user-profile?access_token=${token}`
+        `https://spotifystats-fn9u.onrender.com/user-profile?access_token=${token}`
       );
       const data = await response.json();
 
@@ -105,7 +105,7 @@ const App = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/get-playlist?playlist_id=${playlistIdExtracted}`
+        `https://spotifystats-fn9u.onrender.com/get-playlist?playlist_id=${playlistIdExtracted}`
       );
       const data = await response.json();
 

@@ -39,7 +39,7 @@ app.get('/callback', async (req, res) => {
   const authCode = req.query.code;
 
   if (!authCode) {
-    return res.redirect('http://localhost:8000/login');
+    return res.redirect('https://spotifystats-fn9u.onrender.com/login');
   }
 
   try {

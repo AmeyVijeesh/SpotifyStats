@@ -8,13 +8,13 @@ const FetchTopItems = ({ access_token }) => {
   const fetchTopItems = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/top-items?type=tracks`
+        `https://spotifystats-fn9u.onrender.com/top-items?type=tracks`
       );
       const data = await response.json();
       setTopTracks(data.items);
 
       const response_a = await fetch(
-        `http://localhost:8000/top-items?type=artists`
+        `https://spotifystats-fn9u.onrender.com/top-items?type=artists`
       );
       const data_a = await response_a.json();
       setTopArtists(data_a.items);
