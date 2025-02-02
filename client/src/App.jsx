@@ -15,6 +15,7 @@ const App = () => {
   const [topTracks, setTopTracks] = useState(null);
   const [topArtists, setTopArtists] = useState(null);
   const [noPlaylists, setNoPlaylists] = useState(0);
+  const [playlistImg, setPlaylistImg] = useState(null);
 
   const handleLogin = () => {
     const clientId = 'c9e9abc6c49c44abb0e02bd049165d92';
@@ -110,6 +111,7 @@ const App = () => {
       const data = await response.json();
 
       setPlaylistData(data.tracks.items);
+      setPlaylistImg(data.images[0]?.url);
       console.log(playlistData);
     } catch (error) {
       console.error('Error fetching playlist data:', error);
@@ -165,6 +167,7 @@ const App = () => {
           </div>
           {playlistData && (
             <div className="playlistContainer">
+              <img src={playlistImg} />
               <h3 className="searchHeader">Playlist Tracks:</h3>
               <ol>
                 {playlistData.map((track) => (
